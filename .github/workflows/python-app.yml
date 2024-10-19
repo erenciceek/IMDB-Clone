@@ -54,6 +54,7 @@ jobs:
     - name: Generate coverage report
       run: |
         pip install coverage
+        cd movie_site
         coverage run manage.py test
         coverage report
         coverage xml
