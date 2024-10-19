@@ -58,3 +58,9 @@ jobs:
         coverage run manage.py test
         coverage report
         coverage xml
+        
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: movie_site/coverage.xml
