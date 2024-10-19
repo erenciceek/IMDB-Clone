@@ -43,6 +43,7 @@ jobs:
 
     - name: Set up the database
       run: |
+        cd movie_site
         python manage.py migrate
 
     - name: Run tests
