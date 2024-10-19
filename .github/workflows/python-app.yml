@@ -28,6 +28,7 @@ jobs:
 
     - name: Run tests
       run: |
+        cd movie_site
         python manage.py test
 
     - name: Generate coverage report
