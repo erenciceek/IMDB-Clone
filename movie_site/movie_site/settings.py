@@ -89,10 +89,10 @@ WSGI_APPLICATION = 'movie_site.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Movie',  # Veritabanı adı
-        'USER': 'postgres',  # Kullanıcı adı
-        'PASSWORD': '123456',  # Kullanıcı şifresi
-        'HOST': 'localhost',  # Veritabanı sunucusunun adresi
+        'NAME': 'imdb_5ee2',  # Veritabanı adı
+        'USER': 'imdb_5ee2_user',  # Kullanıcı adı
+        'PASSWORD': 'P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA',  # Kullanıcı şifresi
+        'HOST': 'dpg-ctrhgr0gph6c73dno7d0-a',  # Veritabanı sunucusunun adresi
         'PORT': '5432',  # PostgreSQL'in varsayılan portu
     }
 }
