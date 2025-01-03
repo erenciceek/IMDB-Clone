@@ -43,7 +43,7 @@ jobs:
 
     - name: Drop existing test database
       env:
-        PGPASSWORD: postgres
+        PGPASSWORD: 123456
       run: |
         psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS test_imdb_5ee2;"
 
