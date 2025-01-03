@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
@@ -11,21 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15  
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 123456 
-          POSTGRES_DB: Movie 
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres" 
-          --health-interval 10s 
-          --health-timeout 5s 
-          --health-retries 5
 
     steps:
     - name: Check out the repository
@@ -42,11 +27,15 @@ jobs:
         pip install -r requirements.txt
 
     - name: Set up the database
+      env:
+        DATABASE_URL: "postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2"
       run: |
         cd movie_site
         python manage.py migrate
 
     - name: Run tests
+      env:
+        DATABASE_URL: "postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2"
       run: |
         cd movie_site
         python manage.py test
@@ -58,9 +47,10 @@ jobs:
         coverage run manage.py test
         coverage report
         coverage xml
-        
+
     - name: Upload coverage report
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
         path: movie_site/coverage.xml
+
