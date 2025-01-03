@@ -17,7 +17,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: 123456
           POSTGRES_DB: test_imdb_5ee2
         ports:
           - 5432:5432
@@ -41,8 +41,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set DATABASE_URL environment variable
-      run: echo "DATABASE_URL=postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2" >> $GITHUB_ENV
+    - name: Drop existing test database
+      env:
+        PGPASSWORD: postgres
+      run: |
+        psql -h localhost -U postgres -c "DROP DATABASE IF EXISTS test_imdb_5ee2;"
 
     - name: Run migrations
       working-directory: movie_site
