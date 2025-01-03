@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD Pipeline
 
 on:
   push:
@@ -14,53 +14,46 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15  
+        image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 123456 
-          POSTGRES_DB: Movie 
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_imdb_5ee2
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres" 
-          --health-interval 10s 
-          --health-timeout 5s 
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
           --health-retries 5
 
     steps:
-    - name: Check out the repository
+    - name: Check out code
       uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.10'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up the database
+    - name: Set DATABASE_URL environment variable
+      run: echo "DATABASE_URL=postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2" >> $GITHUB_ENV
+
+    - name: Run migrations
       run: |
-        cd movie_site
         python manage.py migrate
 
     - name: Run tests
       run: |
-        cd movie_site
-        python manage.py test --keepdb
+        python manage.py test
 
-    - name: Generate coverage report
-      run: |
-        pip install coverage
-        cd movie_site
-        coverage run manage.py test --keepdb
-        coverage report
-        coverage xml
-        
-    - name: Upload coverage report
+    - name: Upload test results
       uses: actions/upload-artifact@v3
       with:
-        name: coverage-report
-        path: movie_site/coverage.xml
+        name: test-results
+        path: reports/test-results.xml
