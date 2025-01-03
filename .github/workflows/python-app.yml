@@ -14,11 +14,11 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:15  
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db  # Test sırasında kullanılacak geçici veritabanı
+          POSTGRES_PASSWORD: 123456 
+          POSTGRES_DB: Movie 
         ports:
           - 5432:5432
         options: >-
@@ -41,12 +41,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Configure test database environment
-      env:
-        DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/test_db
-      run: |
-        echo "Test database environment configured."
-
     - name: Set up the database
       run: |
         cd movie_site
@@ -55,16 +49,16 @@ jobs:
     - name: Run tests
       run: |
         cd movie_site
-        python manage.py test
+        python manage.py test --keepdb
 
     - name: Generate coverage report
       run: |
         pip install coverage
         cd movie_site
-        coverage run manage.py test
+        coverage run manage.py test --keepdb
         coverage report
         coverage xml
-
+        
     - name: Upload coverage report
       uses: actions/upload-artifact@v3
       with:
