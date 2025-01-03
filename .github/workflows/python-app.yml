@@ -45,15 +45,17 @@ jobs:
       run: echo "DATABASE_URL=postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2" >> $GITHUB_ENV
 
     - name: Run migrations
+      working-directory: movie_site
       run: |
         python manage.py migrate
 
     - name: Run tests
+      working-directory: movie_site
       run: |
-        python manage.py test
+        python manage.py test movies
 
     - name: Upload test results
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: reports/test-results.xml
+        path: movie_site/reports/test-results.xml
