@@ -1,4 +1,4 @@
-name: Django CI/CD
+name: Django CI
 
 on:
   push:
@@ -11,6 +11,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db  # Test sırasında kullanılacak geçici veritabanı
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
 
     steps:
     - name: Check out the repository
@@ -26,16 +41,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up the database
+    - name: Configure test database environment
       env:
-        DATABASE_URL: "postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2"
+        DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/test_db
+      run: |
+        echo "Test database environment configured."
+
+    - name: Set up the database
       run: |
         cd movie_site
         python manage.py migrate
 
     - name: Run tests
-      env:
-        DATABASE_URL: "postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2"
       run: |
         cd movie_site
         python manage.py test
@@ -53,4 +70,3 @@ jobs:
       with:
         name: coverage-report
         path: movie_site/coverage.xml
-
