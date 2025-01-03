@@ -107,7 +107,7 @@ else:
     # Üretim veritabanı ayarları
     DATABASES = {
         'default': dj_database_url.parse(
-            "postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2",
+            "DATABASE_URL",
             conn_max_age=600,
             ssl_require=True
         )
