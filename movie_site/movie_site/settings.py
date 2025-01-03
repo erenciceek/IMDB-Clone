@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import dj_database_url
 from pathlib import Path
 
-
+import sys
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -90,13 +90,30 @@ WSGI_APPLICATION = 'movie_site.wsgi.application'
 # }
 
 
-DATABASES = {
-    'default': dj_database_url.parse(
-        "postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2",
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# Database configuration
+if 'test' in sys.argv:
+    # Test veritabanı ayarları
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'test_imdb_5ee2',  # Test veritabanı adı
+            'USER': 'postgres',
+            'PASSWORD': '123456',
+            'HOST': '127.0.0.1',  # Test ortamında PostgreSQL'in varsayılan hostu
+            'PORT': '5432',  # Test ortamında PostgreSQL'in varsayılan portu
+        }
+    }
+else:
+    # Üretim veritabanı ayarları
+    DATABASES = {
+        'default': dj_database_url.parse(
+            "postgresql://imdb_5ee2_user:P7zzdB4sPUVuEnpHPBPtWcQ122msU2JA@dpg-ctrhgr0gph6c73dno7d0-a.oregon-postgres.render.com/imdb_5ee2",
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+
+
 
 """
 DATABASES = {
